@@ -2,7 +2,7 @@
 
  This is a restful API build in TypeScript for the usage of a frontend developper.
  The API use Postgresql for storing store informations.
- The database schema and Endpoint can be found in the [ Requirement.md]( creating-an-api-with-postgresql-and-express/REQUIREMENTS.md ) file.
+ The database schema and Endpoint can be found in the [ Requirement.md]( https://github.com/Pattykev/creating-an-api-with-postgresql-and-express/blob/master/REQUIREMENTS.md ) file.
 
 ## Installation instructions
 
