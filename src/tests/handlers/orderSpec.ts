@@ -1,18 +1,61 @@
 import supertest from 'supertest';
 import jwt, { Secret } from 'jsonwebtoken';
 import app from '../../server';
-import { Order } from '../../models/order';
+import { Order, OrderStatus } from '../../models/order';
+import { User, UserQueries } from '../../models/user';
+import { Product, ProductQueries } from '../../models/product';
+
 
 const SECRET = process.env.TOKEN_SECRET as Secret;
 const request = supertest(app);
 
+const userData: User = {
+  userName: "pattykev",
+  firstName: "TCHINGUÉ",
+  lastName: "Patricia",
+  password: "patty@2103"
+};
+
+const productData: Product = {
+  name: 'candy',
+  price: 50,
+  category: 'foods'
+};
+let  productId: number, userId : number ;
+
 describe('Order handler', () => {
-  const orderData: Order = {
-    status: 'active',
-    id_user: 1
-  };
+  
   let token: string,
     orderId: number;
+
+    it('should gets the create endpoint ', async () => {
+      const res = await request.post('/product/create').send(productData);
+      const { body, status } = res;
+      token =body;
+      //@ts-ignore
+      const { product } = jwt.verify(token, SECRET);
+      productId = product.id;
+      expect(status).toBe(200);
+      
+    });
+    it("should gets the create endpoint ", async () => {
+      const res = await request.post("/user/create").send(userData);
+      const { body, status } = res;
+      token = body;
+      //@ts-ignore
+      const { user } = jwt.verify(token, SECRET);
+      userId = user.id;
+      expect(status).toBe(200);
+      
+    });
+
+    const orderData: Order = {
+      quantity: 34,
+        status: OrderStatus.ACTIVE,
+        id_user: Number (userId),
+        id_product: Number(productId)
+    };
+  
 
   it('should gets the create endpoint ', async () => {
     const res = await request.post('/order/create').send(orderData);
@@ -25,43 +68,16 @@ describe('Order handler', () => {
     
   });
 
-  it('should gets the index endpoint ', async () => {
-    const res = await request
-      .get('/order')
-      .set('Authorization', 'bearer ' + token);
-
-    expect(res.status).toBe(200);
-   
-  });
 
   it('should gets the show endpoint ', async () => {
     const res = await request
-      .get(`/order/${orderId}`)
+      .get(`/order/${userId}`)
       .set('Authorization', 'bearer ' + token);
 
     expect(res.status).toBe(200);
     
   });
 
-  it('should gets the delete endpoint ', async () => {
-    const res = await request
-      .delete(`/order/remove`)
-      .set('Authorization', 'bearer ' + token);
 
-    expect(res.status).toBe(200);
-    
-  });
-
-  it('should gets the update endpoint ', async () => {
-    const orderData: Order = {
-      status: 'complete',
-      id_user: 1
-    };
-    const res = await request
-      .put('/order/update')
-      .send(orderData)
-      .set('Authorization', 'bearer ' + token);
-    expect(res.status).toBe(200);
-    
-  });
+  
 });

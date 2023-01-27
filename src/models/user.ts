@@ -18,7 +18,7 @@ export class UserQueries {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'select* from users';
+      const sql = 'select * from users';
       const result = await conn.query(sql);
       conn.release();
       return result.rows;
@@ -31,7 +31,7 @@ export class UserQueries {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'select* from users where id($1)';
+      const sql = 'select * from users where id=$1';
       const result = await conn.query(sql, [id]);
       conn.release();
       return result.rows[0];
@@ -45,7 +45,7 @@ export class UserQueries {
       //@ts-ignore
       const conn = await Client.connect();
       const sql =
-        'insert into users(username,firstname,lastname,password) values($1,$2,$3,$4) returning*';
+        'insert into users(username, firstname, lastname, password) values($1, $2, $3, $4) returning *';
       const hash = bcrypt.hashSync(user.password + pepper, salt_rounds);
       const result = await conn.query(sql, [
         user.userName,
@@ -85,7 +85,7 @@ export class UserQueries {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'delete from users where id=($1)';
+      const sql = 'delete from users where id=$1';
       const result = await conn.query(sql, [id]);
       conn.release();
       return result.rows[0];
@@ -97,7 +97,7 @@ export class UserQueries {
   async authenticate(userName: string, password: string): Promise<User | null> {
     //@ts-ignore
     const conn = await Client.connect();
-    const sql = 'select password from users where userName=($1)';
+    const sql = 'select password from users where username=$1';
     const result = await conn.query(sql, [userName]);
     if (result.rows.length) {
       const user = result.rows[0];

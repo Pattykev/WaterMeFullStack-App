@@ -13,7 +13,7 @@ export class ProductQueries {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'select* from product';
+      const sql = 'select * from product';
       const result = await conn.query(sql);
       conn.release();
       return result.rows;
@@ -26,7 +26,7 @@ export class ProductQueries {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'select* from product where id($1)';
+      const sql = 'select * from product where id=$1';
       const result = await conn.query(sql, [id]);
       conn.release();
       return result.rows[0];
@@ -40,7 +40,7 @@ export class ProductQueries {
       //@ts-ignore
       const conn = await Client.connect();
       const sql =
-        'insert into product(name,price,category) values($1,$2,$3) returning*';
+        'insert into product(name, price, category) values($1, $2, $3) returning*';
       const result = await conn.query(sql, [
         product.name,
         product.price,
@@ -76,7 +76,7 @@ export class ProductQueries {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'delete from product where id=($1)';
+      const sql = 'delete from product where id=$1';
       const result = await conn.query(sql, [id]);
       conn.release();
       return result.rows[0];

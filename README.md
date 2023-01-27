@@ -91,7 +91,7 @@ If the variable ENV has the value test, the storefront_db_test will be used inst
      
      - [GET] [ http://localhost:3000/order/:id]() to show a particular order registrered with the `id` user 
      - [POST] [ http://localhost:3000/order/create]() to create a order with his **id_user** and **status**
-     - [PUT] [ http://localhost:3000/order/update]() to update order's informations registrered
+     
      
 
 

@@ -1,6 +1,9 @@
 /* Replace with your SQL commands */
+drop type if exists orderStatus ;
+create type orderStatus as enum('active', 'complete');
 create table orders(id serial primary key,
-id_user integer,
-status varchar(10),
-foreign key (id_user) REFERENCES users(id) on delete cascade on update cascade
+quantity integer,
+status orderstatus,
+id_user bigint REFERENCES users(id),
+id_product bigint REFERENCES product(id)
 );

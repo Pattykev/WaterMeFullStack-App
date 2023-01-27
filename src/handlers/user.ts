@@ -1,15 +1,16 @@
-import express, { Request, Response } from 'express';
-import { User, UserQueries } from '../models/user';
-import jwt from 'jsonwebtoken';
+import express, { Request, Response } from "express";
+import { User, UserQueries } from "../models/user";
+import jwt from "jsonwebtoken";
+import auth from "../middleware/authenticate";
 
 const userHandler = new UserQueries();
 
-const index = async (_req: Request, res: Response) => {
+const index = async ( _req: Request, res: Response) => {
   const users = await userHandler.index();
-  res.json(users);
+  res.json({users});
 };
 
-const verifyAuthToken = (req: Request, res: Response, next: () => void) => {
+const verifyAuthToken = ( req: Request, res: Response, next: () => void) => {
   try {
     const authorizationHeader = String(req.headers.authorization);
     const token = String(authorizationHeader.split(' ')[1]);
@@ -17,13 +18,13 @@ const verifyAuthToken = (req: Request, res: Response, next: () => void) => {
     next();
   } catch (err) {
     res.status(401);
-    res.json('Access denied, invalid token');
+    res.json("Access denied, invalid token");
   }
 };
 
 const show = async (req: Request, res: Response) => {
   const user = await userHandler.show(Number(req.params.id));
-  res.json(user);
+  res.json({user});
 };
 
 const create = async (req: Request, res: Response) => {
@@ -35,10 +36,15 @@ const create = async (req: Request, res: Response) => {
       password: req.body.password
     };
     const newUser = await userHandler.create(user);
-    res.json(newUser);
+    const token = jwt.sign(
+      { user:{ ...user, password: "_"}},
+      String(process.env.TOKEN_SECRET)
+    );
+    
+    return res.json(token);
   } catch (err) {
     res.status(400);
-    res.json(err);
+    res.json({err});
   }
 };
 
@@ -52,10 +58,15 @@ const authenticate = async (req: Request, res: Response) => {
       user.userName,
       user.password
     );
-    res.json(newUser);
+    const token = jwt.sign(
+      { user:{ ...user, password: "_"}},
+      String(process.env.TOKEN_SECRET)
+    );
+    
+    return res.json({token});
   } catch (err) {
     res.status(400);
-    res.json(err);
+    res.json({err});
   }
 };
 
@@ -69,24 +80,24 @@ const update = async (req: Request, res: Response) => {
       password: req.body.password
     };
     const newUser = await userHandler.update(user);
-    res.json(newUser);
+    res.json({newUser});
   } catch (err) {
     res.status(400);
-    res.json(err);
+    res.json({err});
   }
 };
 
 const remove = async (req: Request, res: Response) => {
   const deleteUser = await userHandler.delete(req.body.id);
-  res.json(deleteUser);
+  res.json({deleteUser});
 };
 
 const userRoutes = (app: express.Application) => {
-  app.get('/user', index),
-    app.get('/user/:id', show),
-    app.post('/user/authenticate', verifyAuthToken, authenticate),
-    app.post('/user/create', verifyAuthToken, create),
-    app.put('/user/update', verifyAuthToken, update),
-    app.delete('/user/remove', verifyAuthToken, remove);
+  app.get("/user", index),
+    app.get("/user/:id", show),
+    app.post("/user/authenticate",  authenticate),
+    app.post("/user/create", create),
+    app.put("/user/update",  update),
+    app.delete("/user/remove",remove);
 };
 export default userRoutes;

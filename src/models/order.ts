@@ -2,17 +2,26 @@
 
 import Client from '../database';
 
+export enum OrderStatus{
+  ACTIVE= 'active',
+  COMPLETE= 'complete'
+
+}
+
 export type Order = {
   id?: number;
-  id_user: number;
+  quantity: number;
   status: string;
+  id_user: number;
+  id_product: number;
+  
 };
 export class OrderQueries {
   async show(id_user: number): Promise<Order[]> {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = "select* from orders where id_user($1) and status='active'";
+      const sql = "select * from orders where id_user=$1 ";
       const result = await conn.query(sql, [id_user]);
       conn.release();
       return result.rows;
@@ -21,12 +30,12 @@ export class OrderQueries {
     }
   }
 
-  async create(order: Order): Promise<Order> {
+  async create({quantity, status=OrderStatus.ACTIVE, id_user, id_product}: Order): Promise<Order> {
     try {
       //@ts-ignore
       const conn = await Client.connect();
-      const sql = 'insert into orders(status,id_user) values($1,$2) returning*';
-      const result = await conn.query(sql, [order.status, order.id_user]);
+      const sql = 'insert into orders(quantity, status, id_user, id_product) values($1,$2,$3,$4) returning*';
+      const result = await conn.query(sql, [quantity, status, id_user, id_product]);
       conn.release();
       return result.rows[0];
     } catch (err) {
@@ -34,23 +43,6 @@ export class OrderQueries {
     }
   }
 
-  async update(order: Order): Promise<Order> {
-    try {
-      //@ts-ignore
-      const conn = await Client.connect();
-      const sql =
-        'update orders set  status=$2, id_user=$3 where id=$1 returning*';
-      const result = await conn.query(sql, [
-        order.id,
-        order.id_user,
-        order.status
-      ]);
-      conn.release();
-      return result.rows[0];
-    } catch (err) {
-      throw new Error(`Could not update the order Error: ${err}`);
-    }
-  }
   async deleteAll(): Promise<void> {
     try {
       //@ts-ignore
