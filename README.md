@@ -43,7 +43,7 @@ If the variable ENV has the value test, the storefront_db_test will be used inst
 
 ## Server running
 
-  `npm run start` or `npm run watch` : run the server at the **port 3000** if the variable ENV has the value dev so you you can access the localhost server by the **URL** [ http://localhost:3000]() which show you a greeting message and if the variable ENV has the value test the server will listen at ** port 3001** and the **URL** will be  [ http://localhost:3001]() 
+  `npm run start` or `npm run watch` : run the server at the **port 3000** if the variable ENV has the value dev so you you can access the localhost server by the **URL** [ http://localhost:3000]() which show you a greeting message and if the variable ENV has the value test the server will listen at **port 3001** and the **URL** will be  [ http://localhost:3001]() 
 
  
  ## Scripts running
