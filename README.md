@@ -88,16 +88,11 @@ If the variable ENV has the value test, the storefront_db_test will be used inst
  - [DELETE] [ http://localhost:3000/product]() to remove a product registrered
 
  ### Order Routes
-     
-<<<<<<< HEAD
-     - [GET] [ http://localhost:3000/order/:id]() to show a particular order registrered with the `id` user 
-     - [POST] [ http://localhost:3000/order/create]() to create a order with his **id_user** and **status**
-     
-=======
+   
  - [GET] [ http://localhost:3000/order/:id]() to show a particular order registrered with the `id` user 
  - [POST] [ http://localhost:3000/order/create]() to create a order with his **id_user** and **status**
- - [PUT] [ http://localhost:3000/order/update]() to update order's informations registrered
->>>>>>> d3e823805dd1a1c97b041dd203e35bb0dbe794ed
+ 
+ 
      
 
 
