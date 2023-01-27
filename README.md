@@ -43,7 +43,7 @@ If the variable ENV has the value test, the storefront_db_test will be used inst
 
 ## Server running
 
-  `npm run start` or `npm run watch` : run the server at the **port 3000** if the variable ENV has the value dev so you you can access the localhost server by the **URL** [ http://localhost:3000]() which show you a greeting message and if the variable ENV has the value test the server will listen at ** port 3001** and the **URL** will be  [ http://localhost:3001]() 
+  `npm run start` or `npm run watch` : run the server at the **port 3000** if the variable ENV has the value dev so you you can access the localhost server by the **URL** [ http://localhost:3000]() which show you a greeting message and if the variable ENV has the value test the server will listen at **port 3001** and the **URL** will be  [ http://localhost:3001]() 
 
  
  ## Scripts running
@@ -68,30 +68,36 @@ If the variable ENV has the value test, the storefront_db_test will be used inst
   
   `npm run test`: for running unit tests
 
-     ## API Routes
+  ## API Routes
 
-     ### User Routes
+ ### User Routes
      
-     - [GET] [ http://localhost:3000/user]() to show all the users registrered
-     - [GET] [ http://localhost:3000/user/:id]() to show a particular user registrered with the `id`
-     - [POST ][ http://localhost:3000/user/authenticate]() to authenticate an user 
-     - [POST] [ http://localhost:3000/user/create]() to create an user with his **username**, **firstname**, **lastname** and **password**
-     - [PUT] [ http://localhost:3000/user/update]() to update user's informations registrered
-     - [DELETE] [ http://localhost:3000/user]() to remove an user registrered
+ - [GET] [ http://localhost:3000/user]() to show all the users registrered
+ - [GET] [ http://localhost:3000/user/:id]() to show a particular user registrered with the `id`
+ - [POST ][ http://localhost:3000/user/authenticate]() to authenticate an user 
+ - [POST] [ http://localhost:3000/user/create]() to create an user with his **username**, **firstname**, **lastname** and **password**
+ - [PUT] [ http://localhost:3000/user/update]() to update user's informations registrered
+ - [DELETE] [ http://localhost:3000/user]() to remove an user registrered
 
-      ### Product Routes
+ ### Product Routes
      
-     - [GET] [ http://localhost:3000/product]() to show all the products registrered
-     - [GET] [ http://localhost:3000/product/:id]() to show a particular product registrered with the `id` 
-     - [POST] [ http://localhost:3000/product/create]() to create a product with his **name**, **price** and **category**
-     - [PUT] [ http://localhost:3000/product/update]() to update product's informations registrered
-     - [DELETE] [ http://localhost:3000/product]() to remove a product registrered
+ - [GET] [ http://localhost:3000/product]() to show all the products registrered
+ - [GET] [ http://localhost:3000/product/:id]() to show a particular product registrered with the `id` 
+ - [POST] [ http://localhost:3000/product/create]() to create a product with his **name**, **price** and **category**
+ - [PUT] [ http://localhost:3000/product/update]() to update product's informations registrered
+ - [DELETE] [ http://localhost:3000/product]() to remove a product registrered
 
-     ### Order Routes
+ ### Order Routes
      
+<<<<<<< HEAD
      - [GET] [ http://localhost:3000/order/:id]() to show a particular order registrered with the `id` user 
      - [POST] [ http://localhost:3000/order/create]() to create a order with his **id_user** and **status**
      
+=======
+ - [GET] [ http://localhost:3000/order/:id]() to show a particular order registrered with the `id` user 
+ - [POST] [ http://localhost:3000/order/create]() to create a order with his **id_user** and **status**
+ - [PUT] [ http://localhost:3000/order/update]() to update order's informations registrered
+>>>>>>> d3e823805dd1a1c97b041dd203e35bb0dbe794ed
      
 
 
