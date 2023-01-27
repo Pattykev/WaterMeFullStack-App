@@ -5,19 +5,19 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 #### Products
-- Index: `/product`
-- Show:`/product/:id`
-- Create [token required] : `/product/create`
+- Index: `GET /product`
+- Show:`GET /product/:id`
+- Create [token required] : `POST /product/create`
 - [OPTIONAL] Top 5 most popular products 
 - [OPTIONAL] Products by category (args: product category)
 
 #### Users
-- Index [token required]: `/user`
-- Show [token required] : `/user/:id`
-- Create N[token required]: `/user/create`
+- Index [token required]: ` GET /user`
+- Show [token required] : ` GET /user/:id`
+- Create N[token required]: `POST /user/create`
 
 #### Orders
-- Current Order by user (args: user id)[token required]: `/order/:id`
+- Current Order by user (args: user id)[token required]: `GET /order/:id`
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
 
 ## Data Shapes
@@ -27,14 +27,14 @@ These are the notes from a meeting with the frontend developer that describe wha
 - price
 - [OPTIONAL] category
 
-`table product( id serial primary key,name varchar(123),price integer,category varchar(123));`
+
 
 #### User
 - id
 - firstName
 - lastName
 - password
-`table users (id serial primary key,username varchar(123),firstname varchar(123),lastname varchar(123),password varchar(123));`
+
 
 #### Orders
 - id
@@ -42,6 +42,21 @@ These are the notes from a meeting with the frontend developer that describe wha
 - quantity of each product in the order
 - user_id
 - status of order (active or complete)
-`table orders (id serial primary key,id_user REFERENCES users(id),status varchar(10));`
-`table order_products(id serial primary key,quantity integer,id_order REFERENCES orders(id),id_product REFERENCES product(id) ,id_user integer);`
+
+
+ ## Database schema
+
+ ` product( id serial primary key,name varchar(123),price integer,category varchar(123));`
+
+ ` users (id serial primary key,username varchar(123),firstname varchar(123),lastname varchar(123),password varchar(123));`
+
+ ` orders (id serial primary key,id_user REFERENCES users(id),status varchar(10));`
+
+` order_products(id serial primary key,quantity integer,id_order REFERENCES orders(id),id_product REFERENCES product(id) ,id_user integer);`
+
+ 
+
+
+
+
 
