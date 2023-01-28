@@ -6,25 +6,31 @@ import auth from "../middleware/authenticate";
 const userHandler = new UserQueries();
 
 const index = async ( _req: Request, res: Response) => {
+  try{
   const users = await userHandler.index();
-  res.json({users});
+  if(users.length==0){
+   return res.status(404).json(users);
+  }
+  res.status(200).json(users);
+}
+catch(error){
+  res.status(400).json(error);
+}
 };
 
-const verifyAuthToken = ( req: Request, res: Response, next: () => void) => {
-  try {
-    const authorizationHeader = String(req.headers.authorization);
-    const token = String(authorizationHeader.split(' ')[1]);
-    jwt.verify(token, String(process.env.TOKEN_SECRET));
-    next();
-  } catch (err) {
-    res.status(401);
-    res.json("Access denied, invalid token");
-  }
-};
 
 const show = async (req: Request, res: Response) => {
+  try{
+
   const user = await userHandler.show(Number(req.params.id));
-  res.json({user});
+  if(!user){
+    return res.status(404).json(user);
+   }
+  res.status(200).json(user);
+}
+catch(error){
+  res.status(400).json(error);
+}
 };
 
 const create = async (req: Request, res: Response) => {
@@ -35,16 +41,17 @@ const create = async (req: Request, res: Response) => {
       lastName: req.body.lastName,
       password: req.body.password
     };
-    const newUser = await userHandler.create(user);
-    const token = jwt.sign(
-      { user:{ ...user, password: "_"}},
-      String(process.env.TOKEN_SECRET)
-    );
+    if(!user.userName || !user.firstName || !user.lastName || !user.password){
+      return res.status(404).json("Missing value");
+     }
+
+    const newUser: User = await userHandler.create(user);
+    const token = jwt.sign( user,String(process.env.TOKEN_SECRET));
     
-    return res.json(token);
+    return res.status(200).json({token, newUser});
   } catch (err) {
     res.status(400);
-    res.json({err});
+    res.json(err);
   }
 };
 
@@ -54,16 +61,16 @@ const authenticate = async (req: Request, res: Response) => {
       userName: req.body.userName,
       password: req.body.password
     };
-    const newUser = await userHandler.authenticate(
+    const newUser: User | null = await userHandler.authenticate(
       user.userName,
       user.password
     );
-    const token = jwt.sign(
-      { user:{ ...user, password: "_"}},
-      String(process.env.TOKEN_SECRET)
-    );
+    if(!newUser){
+      return res.status(404).json("Cannot be connect");
+    }
+    const token = jwt.sign( user,String(process.env.TOKEN_SECRET));
     
-    return res.json({token});
+     res.status(200).json(token);
   } catch (err) {
     res.status(400);
     res.json({err});
@@ -79,11 +86,16 @@ const update = async (req: Request, res: Response) => {
       lastName: req.body.lastName,
       password: req.body.password
     };
+    if(!user.userName || !user.firstName || !user.lastName || !user.password){
+      return res.status(404).json("Missing value");
+     }
     const newUser = await userHandler.update(user);
-    res.json({newUser});
+    const token = jwt.sign( user,String(process.env.TOKEN_SECRET));
+    
+    return res.status(200).json({token, newUser});
   } catch (err) {
     res.status(400);
-    res.json({err});
+    res.json(err);
   }
 };
 
@@ -93,11 +105,11 @@ const remove = async (req: Request, res: Response) => {
 };
 
 const userRoutes = (app: express.Application) => {
-  app.get("/user", index),
-    app.get("/user/:id", show),
-    app.post("/user/authenticate",  authenticate),
-    app.post("/user/create", create),
-    app.put("/user/update",  update),
-    app.delete("/user/remove",remove);
+  app.get("/user",auth, index),
+    app.get("/user/:id", auth, show),
+    app.post("/user/authenticate",auth,  authenticate),
+    app.post("/user/create",auth, create),
+    app.put("/user/update", auth, update),
+    app.delete("/user/remove",auth, remove);
 };
 export default userRoutes;

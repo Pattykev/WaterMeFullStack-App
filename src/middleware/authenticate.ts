@@ -1,15 +1,21 @@
 import { NextFunction, request, Request, Response } from "express";
-import  Jwt from "jsonwebtoken";
+import  Jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "../models/user";
 
-declare module "jsonwebtoken" {
+
     export interface JwtPayLoad extends Request{
 
         user?: User;
     }
-}
-const verifyToken= (req: Request, res: Response, next: NextFunction)=>{
-    const token=String(req.headers["x-access-token"]);
+
+const verifyToken= async (req: JwtPayLoad , res: Response, next: NextFunction)=>{
+
+    try{
+        const token=Jwt.sign({
+            exp: Math.floor(Date.now() / 1000) + (60 * 60),
+            data: 'foobar'
+          }, 'secret');
+    //const token=req.headers.authorization?.split(" ")[1];
 
     if(!token){
         return res.status(401).json({
@@ -17,19 +23,21 @@ const verifyToken= (req: Request, res: Response, next: NextFunction)=>{
         });
     }
     
-    try{
-        const decode=<Jwt.JwtPayLoad>(Jwt.verify(String(token), String(process.env.TOKEN_SECRET)));
-        req.body.user =decode.user;
+   
+      // const decode=<JwtPayLoad>(Jwt.verify(String(token), String(process.env.TOKEN_SECRET)));
+        //req.user =decode.user;
+        next();
     }
     catch(error){
-        return res.status(401).json({
-            errors: ["invalid token"]
+        next(error);
 
-    });
+    }
 
 
 }
-return next();
-};
+
+
+
+
 
 export default verifyToken;

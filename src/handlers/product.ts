@@ -8,11 +8,14 @@ const productHandler = new ProductQueries();
 const index = async (_req: Request, res: Response) => {
   try{
   const products = await productHandler.index();
-  res.json({products});
+if(products.length==0){
+  return res.status(404).json(products);
+}
+  res.status(200).json(products);
   }
   catch (err) {
-    res.status(500);
-    res.json("Internal server error"+ err);
+    res.status(400);
+    res.json( err);
   }
 };
 
@@ -20,11 +23,14 @@ const index = async (_req: Request, res: Response) => {
 const show = async (req: Request, res: Response) => {
  try  {
   const product = await productHandler.show(Number(req.params.id));
-  res.json({product});
+  if(!product){
+    return res.status(404).json(product);
+  }
+    res.status(200).json(product);
 }
   catch (err) {
-    res.status(500);
-    res.json("Internal server error "+err);
+    res.status(400);
+    res.json(err);
   }
 };
 
@@ -35,8 +41,12 @@ const create = async (req: Request, res: Response) => {
       price: req.body.price,
       category: req.body.category
     };
+    if(!product.name || !product.price || !product.category){
+      return res.status(404).json(product);
+    }
+     
     const newProduct = await productHandler.create(product);
-    res.json({newProduct});
+    res.status(200).json({newProduct});
   } catch (err) {
     res.status(400);
     res.json({err});
@@ -51,8 +61,11 @@ const update = async (req: Request, res: Response) => {
       price: req.body.price,
       category: req.body.category
     };
+    if(!product.name || !product.price || !product.category){
+      return res.status(404).json(product);
+    }
     const newProduct = await productHandler.update(product);
-    res.json({newProduct});
+    res.status(200).json({newProduct});
   } catch (err) {
     res.status(400);
     res.json({err});
@@ -62,19 +75,19 @@ const update = async (req: Request, res: Response) => {
 const remove = async (req: Request, res: Response) => {
   try{
   const deleteProduct = await productHandler.delete(req.body.id);
-  res.json(deleteProduct);
+  res.status(200).json(deleteProduct);
 }
   catch (err) {
-    res.status(500);
-    res.json("Internal server error  "+ err);
+    res.status(400);
+    res.json( err);
   }
 };
 
 const productRoutes = (app: express.Application) => {
   app.get('/product', index),
     app.get('/product/:id', show),
-    app.post('/product/create',  create),
-    app.put('/product/update',  update),
-    app.delete('/product/remove',  remove);
+    app.post('/product/create',auth,  create),
+    app.put('/product/update', auth, update),
+    app.delete('/product/remove', auth, remove);
 };
 export default productRoutes;
