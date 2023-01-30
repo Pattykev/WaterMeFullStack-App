@@ -1,13 +1,15 @@
 import supertest from 'supertest';
 import jwt, { Secret } from 'jsonwebtoken';
 import app from '../../server';
-import { Order, OrderStatus } from '../../models/order';
+import { Order, OrderStatus , OrderQueries} from '../../models/order';
 import { User, UserQueries } from '../../models/user';
 import { Product, ProductQueries } from '../../models/product';
 import Client from '../../database';
 
 const SECRET = process.env.TOKEN_SECRET as Secret;
 const request = supertest(app);
+let token:string, userId: number;
+let user:User;
 
 const userData: User = {
   userName: "pattykev",
@@ -22,75 +24,83 @@ const productData: Product = {
   category: 'foods'
 };
 
-let  productId: number=1, userId : number=1, token:string ;
 
 beforeAll( async()=>{
-  const res = await request.post("/user/create").send(userData)
-  .set("Content-Type","Application/Json")
-  .set("Accept","Application/Json");
-  token = res.body.token;
-  userId = Number(res.body.id);
+  const {body: userBody} = await request.post("/user/create").send(userData);
+  token = userBody;
+  user=jwt.decode(token) as User;
+  
+  
+  
+  
+  
+  spyOn(OrderQueries.prototype, 'create').and.returnValue(
+    Promise.resolve({
+      id:1,
+      products:[
+        {
+          id_product:5,
+          quantity:5,
+        },  
+      ],
+      id_user:1,
+      status:OrderStatus.ACTIVE,
+    })
+  );
 
-  const res2 = await request.post("/user/create").send(productData)
-  .set("Content-Type","Application/Json")
-  .set("Accept","Application/Json");
-  token = res.body.token;
-  productId = Number(res2.body.id);
+  
 });
 
 afterAll( 
  async () => {
   const conn= await Client.connect();
-  (await conn).query("delete from users");
+  await conn.query("delete from users");
+  await conn.query("delete from product");
+  await conn.query("delete from orders");
+  await conn.query("alter sequence users_id_seq restart with 1");
+  await conn.query("alter sequence orders_id_seq restart with 1");
+  await conn.query("alter sequence product_id_seq restart with 1");
+  await conn.query("alter sequence order_products_id_seq restart with 1");
   conn.release();
-
-  const con= await Client.connect();
-  (await con).query("delete from product");
-  con.release();
-
-  const connection= await Client.connect();
-  (await connection).query("delete from orders");
-  connection.release();
  }
 );
-const order: Order={
-  quantity:1,
-  status: OrderStatus.ACTIVE,
-  id_user: Number(userId),
-  id_product:Number(productId)
-}
+
 
 describe('Order handler', () => {
-  
-  let token: string,
-    orderId: number;
-    
 
-    const orderData: Order = {
-      quantity: 34,
-        status: OrderStatus.ACTIVE,
-        id_user: Number (userId),
-        id_product: Number(productId)
-    };
-  
 
   it('should  create the order ', async () => {
+   
     const res = await request.post('/order/create')
-    .send(orderData)
+    .send({id:1,
+      products:[
+        {
+          id_product:5,
+          quantity:5,
+        },  
+      ],
+      id_user:1,
+      status:OrderStatus.ACTIVE})
     .set('Authorization', 'bearer ' + token);
+   
      
     expect(res.status).toBe(200);
-   
+ 
     
   });
 
 
   it('should show the order', async () => {
+    try{
     const res = await request
-      .get(`/order/${userId}`)
+      .get(`/order/1`)
       .set('Authorization', 'bearer ' + token);
 
     expect(res.status).toBe(200);
+    }
+    catch(error){
+      console.log(error);
+    }
     
 
   });

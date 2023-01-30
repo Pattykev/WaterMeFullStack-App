@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import jwt, { Secret } from 'jsonwebtoken';
+import { User, UserQueries } from '../../models/user';
 import app from '../../server';
 import { Product } from '../../models/product';
 import Client from '../../database';
@@ -14,18 +15,24 @@ const productData: Product = {
   category: 'foods'
 };
 
-  beforeAll( async()=>{
-    const res = await request.post("/user/create").send(productData)
-    .set("Content-Type","Application/Json")
-    .set("Accept","Application/Json");
-    token = res.body.token;
-    productId = Number(res.body.id);
-  });
+const userData: User = {
+  userName: "pattykev",
+  firstName: "TCHINGUÉ",
+  lastName: "Patricia",
+  password: "patty@2103"
+};
+
+
+beforeAll( async()=>{
+  const {body: userBody} = await request.post("/user/create").send(userData);
+  token = userBody;
+});
 
   afterAll( 
    async () => {
     const conn= await Client.connect();
     (await conn).query("delete from product");
+    await conn.query("alter sequence product_id_seq restart with 1");
     conn.release();
    }
   );
@@ -56,7 +63,7 @@ describe('Product handler', () => {
 
   it('should show the product ', async () => {
     const res = await request
-      .get(`/product/${productId}`)
+      .get(`/product/1`)
       .set("Content-Type","Application/Json")
       .set("Accept","Application/Json");
 
@@ -66,7 +73,7 @@ describe('Product handler', () => {
 
   it('should delete the product ', async () => {
     const res = await request
-      .delete(`/product/remove`)
+      .delete(`/product/remove/1`)
       .set("Content-Type","Application/Json")
       .set("Accept","Application/Json")
       .set('Authorization', 'bearer ' + token);
@@ -77,13 +84,13 @@ describe('Product handler', () => {
 
   it('should update the product', async () => {
     const productData: Product = {
-      id: productId,
+      id: 1,
       name: 'candy',
       price: 100,
       category: 'foods'
     };
     const res = await request
-      .put('/product/update')
+      .put('/product/update/1')
       .send(productData)
       .set("Content-Type","Application/Json")
       .set("Accept","Application/Json")

@@ -1,4 +1,5 @@
 import { User, UserQueries } from "../../models/user";
+import Client from "../../database";
 
 const user = new UserQueries();
 let u: User;
@@ -94,6 +95,8 @@ describe("Testing user Model", () => {
   });
   afterAll(async ()=>{
     await user.deleteAll();
+    const conn=await Client.connect();
+    await conn.query("alter sequence users_id_seq restart with 1");
   });
 
 });

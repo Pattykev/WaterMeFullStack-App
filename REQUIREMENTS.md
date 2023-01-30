@@ -50,9 +50,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 
  ` users (id serial primary key,username varchar(123),firstname varchar(123),lastname varchar(123),password varchar(123));`
 
- ` orders (id serial primary key,id_user REFERENCES users(id),status varchar(10));`
+ ` orders (id serial primary key,id_user REFERENCES users(id),status enum('activate' , 'complete'));`
 
-` order_products(id serial primary key,quantity integer,id_order REFERENCES orders(id),id_product REFERENCES product(id) ,id_user integer);`
+` order_products(id serial primary key,quantity integer,id_order REFERENCES orders(id),id_product REFERENCES product(id) );`
 
  
 

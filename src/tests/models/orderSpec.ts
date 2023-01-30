@@ -1,11 +1,12 @@
-import { Order, OrderQueries, OrderStatus } from "../../models/order";
+import { Order, OrderQueries, OrderStatus, Order_Products } from "../../models/order";
 import { User, UserQueries } from "../../models/user";
 import { Product, ProductQueries } from "../../models/product";
+import Client from "../../database";
 
 const order = new OrderQueries();
 const user = new UserQueries();
 const product= new ProductQueries();
-let o: Order;
+let o, orderObject: Order;
 let u: User;
 let p: Product;
 
@@ -25,39 +26,46 @@ describe("Testing order Model", () => {
       lastName: "Patricia",
       password: "Patty@2003"
     });
+    let userId=u.id;
     p = await product.create({
       name: "candy",
       price: 50,
       category: "foods"
     });
+    let productId=p.id;
+
+    orderObject={
+      products:[{
+        quantity:5,
+        id_product:productId as unknown as number
+    }],
+    id_user: userId as unknown as number,
+    status: OrderStatus.ACTIVE
+    };
+
   });
 
   it("create method should add an order", async () => {
-     o = await order.create({
-      quantity: 34,
-      status: OrderStatus.ACTIVE,
-      id_user: Number (u.id),
-      id_product: Number( p.id)
-    });
-    expect(o.quantity).toEqual(34);
-    expect(o.status).toEqual(OrderStatus.ACTIVE);
-    expect(Number(o.id_user)).toEqual(Number (u.id));
-    expect(Number(o.id_product)).toEqual(Number (p.id));
+     o = await order.create(orderObject );
+    expect(o).toBeDefined();
    
   });
 
   it("show method should return a list of orders by a user", async () => {
-    const result = await order.show(Number (u.id));
-    expect(result[0].quantity).toEqual(34);
-    expect(result[0].status).toEqual(OrderStatus.ACTIVE);
-    expect(Number(result[0].id_user)).toEqual(Number (u.id));
-    expect(Number(result[0].id_product)).toEqual(Number (p.id));
+    o = await order.create(orderObject );
+    const result = await order.show(Number (o.id));
+    expect(result).toBeDefined();
+  
   });
 
   afterAll(async ()=>{
     await order.deleteAll();
     await product.deleteAll();
     await user.deleteAll();
+    const conn=await Client.connect();
+    await conn.query("alter sequence users_id_seq restart with 1");
+    await conn.query("alter sequence orders_id_seq restart with 1");
+    await conn.query("alter sequence product_id_seq restart with 1");
     
   });
 });

@@ -76,16 +76,16 @@ If the variable ENV has the value test, the storefront_db_test will be used inst
  - [GET] [ http://localhost:3000/user/:id]() to show a particular user registrered with the `id`
  - [POST ][ http://localhost:3000/user/authenticate]() to authenticate an user 
  - [POST] [ http://localhost:3000/user/create]() to create an user with his **username**, **firstname**, **lastname** and **password**
- - [PUT] [ http://localhost:3000/user/update]() to update user's informations registrered
- - [DELETE] [ http://localhost:3000/user]() to remove an user registrered
+ - [PUT] [ http://localhost:3000/user/update/:id]() to update user's informations registrered
+ - [DELETE] [ http://localhost:3000/user/:id]() to remove an user registrered
 
  ### Product Routes
      
  - [GET] [ http://localhost:3000/product]() to show all the products registrered
  - [GET] [ http://localhost:3000/product/:id]() to show a particular product registrered with the `id` 
  - [POST] [ http://localhost:3000/product/create]() to create a product with his **name**, **price** and **category**
- - [PUT] [ http://localhost:3000/product/update]() to update product's informations registrered
- - [DELETE] [ http://localhost:3000/product]() to remove a product registrered
+ - [PUT] [ http://localhost:3000/product/update/:id]() to update product's informations registrered
+ - [DELETE] [ http://localhost:3000/product/:id]() to remove a product registrered
 
  ### Order Routes
    

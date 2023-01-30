@@ -1,11 +1,12 @@
 import supertest from "supertest";
 import jwt, { Secret } from "jsonwebtoken";
 import app from "../../server";
-import { User } from "../../models/user";
+import { User, UserQueries } from "../../models/user";
 import Client from "../../database";
 
 const SECRET = process.env.TOKEN_SECRET as Secret;
 const request = supertest(app);
+const user=new UserQueries();
 
 const userData: User = {
   userName: "pattykev",
@@ -17,17 +18,15 @@ let token: string,
   userId : number;
 
 beforeAll( async()=>{
-  const res = await request.post("/user/create").send(userData)
-  .set("Content-Type","Application/Json")
-  .set("Accept","Application/Json");
-  token = res.body.token;
-  userId = Number(res.body.id);
+  const res = await user.create(userData);
+  userId = Number(res.id);
 });
 
 afterAll( 
  async () => {
   const conn= await Client.connect();
-  (await conn).query("delete from users");
+await conn.query("delete from users");
+await conn.query("alter sequence users_id_seq restart with 1");
   conn.release();
  }
 );
@@ -43,6 +42,7 @@ describe('User handler', () => {
       .send(userData)
       .set("Content-Type","Application/Json")
       .set("Accept","Application/Json");
+      token = res.body;
       expect(res.status).toBe(200);
       
     });
@@ -71,7 +71,7 @@ describe('User handler', () => {
 
   it("should  delete the user ", async () => {
     const res = await request
-      .delete("/user/remove")
+      .delete(`/user/remove/${userId}`)
       .set("Content-Type","Application/Json")
       .set("Accept","Application/Json")
       .set("Authorization", "Bearer " + token);
@@ -81,21 +81,22 @@ describe('User handler', () => {
   });
 
   it('should update the user ', async () => {
+  
     const userData: User = {
-      id: userId,
+
       userName: "patty",
       firstName: "TCHINGUÉ",
       lastName: "Patricia",
       password: "patty@2103"
     };
     const res = await request
-      .put("/user/update")
+      .put(`/user/update/${userId}`)
       .send(userData)
       .set("Content-Type","Application/Json")
       .set("Accept","Application/Json")
       .set("Authorization", "Bearer " + token);
     expect(res.status).toBe(200);
-    
+ 
   });
 
   it('should  authenticate the user ', async () => {
@@ -112,7 +113,7 @@ describe('User handler', () => {
       .post("/user/authenticate")
       .send({ userName: userData.userName, password: "qwertyuio" })
       .set("Authorization", "Bearer " + token);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(404);
     
   });
 });

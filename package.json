@@ -14,7 +14,7 @@
     "test-down": "db-migrate reset  --config ./config/database.json -e test",
     "prettier": "npx prettier --write src",
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess \"node ./dist/server.js\"",
-    "test": "npm run build && npm run test-up && cross-env ENV=test jasmine --config=spec/support/jasmine.json && npm run test-down ",
+    "test": "npm run build && npm run test-up && cross-env ENV=test jasmine --random=false --config=spec/support/jasmine.json && npm run test-down ",
     "tsc": "tsc"
   },
   "author": "TCHINGUÉ MAKAMTÉ Patricia Kévine",

@@ -1,20 +1,19 @@
 import express, { Request, Response } from 'express';
-import { Order, OrderQueries } from '../models/order';
-import jwt from 'jsonwebtoken';
-import auth, { JwtPayLoad } from "../middleware/authenticate";
+import { Order, OrderQueries, Order_Products,OrderStatus } from '../models/order';
+import  { verifyToken } from "../middleware/authenticate";
 
 const orderHandler = new OrderQueries();
 
-const show = async (req: JwtPayLoad , res: Response) => {
+const show = async (req: Request, res: Response) => {
   try {
-  const idUser: number | undefined =req.user?.id;
+  const idUser=req.params.id as unknown as number ;
   if(!idUser){
-    return res.status(401).json("Unauthorized user");
+    return res.status(401).send("Unauthorized user");
   }
   const order = await orderHandler.show(idUser);
-  if(order.length==0){
-    return res.status(404).json(order);
-  }
+  //if(order.length==0){
+   // return res.status(404).send("No order to show");
+ // }
   res.status(200).json(order);
 }
   catch (err) {
@@ -26,13 +25,13 @@ const show = async (req: JwtPayLoad , res: Response) => {
 const create = async (req: Request, res: Response) => {
   try {
     const order: Order = {
-      quantity:req.body.quantity,
-      status: req.body.status,
-      id_user: req.body.id_user,
-      id_product: req.body.id_product
+      products:req.body. products as Order_Products[],
+      status: req.body.status as OrderStatus,
+      id_user: req.body.id_user as number
+  
     };
-    if(!order.quantity || !order.status || !order.id_user || !order.id_product){
-      return res.status(401).json(order);
+    if( !order.status || !order.id_user || !order.products){
+      return res.status(401).send("Missing value");
     }
     const newOrder = await orderHandler.create(order);
     res.status(200).json(newOrder);
@@ -44,7 +43,7 @@ const create = async (req: Request, res: Response) => {
 
 
 const orderRoutes = (app: express.Application) => {
-  app.get('/order/:id', auth,show),
-  app.post('/order/create', auth, create)
+  app.get('/order/:id', verifyToken,show),
+  app.post('/order/create', verifyToken, create)
 };
 export default orderRoutes;

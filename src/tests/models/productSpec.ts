@@ -1,4 +1,5 @@
 import { Product, ProductQueries } from "../../models/product";
+import Client from "../../database";
 
 const product = new ProductQueries();
 let products:Product;
@@ -74,5 +75,7 @@ describe("Testing Product Model", () => {
   });
   afterAll(async ()=>{
     await product.deleteAll();
+    const conn=await Client.connect();
+    await conn.query("alter sequence product_id_seq restart with 1");
   });
 });
