@@ -23,7 +23,11 @@ const userData: User = {
 };
 
 
-beforeAll( async()=>{
+
+
+describe('Product handler', () => {
+
+  beforeAll( async()=>{
   const {body: userBody} = await request.post("/user/create").send(userData);
   token = userBody;
 });
@@ -36,8 +40,6 @@ beforeAll( async()=>{
     conn.release();
    }
   );
-
-describe('Product handler', () => {
   
   
 

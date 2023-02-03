@@ -17,6 +17,10 @@ const userData: User = {
 let token: string,
   userId : number;
 
+
+describe('User handler', () => {
+
+ 
 beforeAll( async()=>{
   const res = await user.create(userData);
   userId = Number(res.id);
@@ -28,14 +32,7 @@ afterAll(
 await conn.query("delete from users");
 await conn.query("alter sequence users_id_seq restart with 1");
   conn.release();
- }
-);
-
-describe('User handler', () => {
-  
-  
-
-  describe("Users routes tests", () => {
+ });
     
     it('should gets create the user  ', async () => {
       const res = await request.post('/user/create')
@@ -117,4 +114,4 @@ describe('User handler', () => {
     
   });
 });
-});
+

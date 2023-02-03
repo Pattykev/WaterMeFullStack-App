@@ -68,6 +68,7 @@ describe("Testing Product Model", () => {
     const results = await product.index();
     expect(results).toEqual([]);
   });
+  
   it("delete method should remove all the product", async () => {
     await product.deleteAll();
     const results = await product.index();

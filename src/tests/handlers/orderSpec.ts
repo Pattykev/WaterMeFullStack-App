@@ -25,6 +25,10 @@ const productData: Product = {
 };
 
 
+
+describe('Order handler', () => {
+
+  
 beforeAll( async()=>{
   const {body: userBody} = await request.post("/user/create").send(userData);
   token = userBody;
@@ -65,8 +69,6 @@ afterAll(
  }
 );
 
-
-describe('Order handler', () => {
 
 
   it('should  create the order ', async () => {

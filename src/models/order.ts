@@ -63,7 +63,7 @@ export class OrderQueries {
       const result = await conn.query(sql, [ status, id_user]);
       const newOrder=result.rows[0];
       
-      const ordersProductsSql = 'insert into orders(quantity,id_order, id_product) values($1,$2,$3) returning*';
+      const ordersProductsSql = 'insert into order_products(id_order, id_product, quantity) values($1,$2,$3) returning*';
       const order_products=[];
 
       for(const product of products){

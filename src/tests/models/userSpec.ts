@@ -88,6 +88,7 @@ describe("Testing user Model", () => {
     const results = await user.index();
     expect(results).toEqual([]);
   });
+  
   it("delete method should remove all the product", async () => {
     await user.deleteAll();
     const results = await user.index();
