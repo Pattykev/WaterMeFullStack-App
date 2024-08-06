@@ -36,11 +36,10 @@ const create = async (req: Request, res: Response) => {
   try {
     const user: User = {
       userName: req.body.userName,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      email: req.body.email,
       password: req.body.password
     };
-    if(!user.userName || !user.firstName || !user.lastName || !user.password){
+    if(!user.userName || !user.email || !user.password){
       return res.status(404).send("Missing value");
      }
 
@@ -66,14 +65,14 @@ const authenticate = async (req: Request, res: Response) => {
     if(!newUser){
       return res.status(404).send("Cannot be connect");
     }
-    
-     res.status(200).json(getTokenByUser(newUser));
+
+    res.status(200).json(getTokenByUser(newUser));
   } catch (err) {
     res.status(400);
     res.json({err});
   }
 };
-
+/*
 const update = async (req: Request, res: Response) => {
   try {
     const user: User = {
@@ -105,13 +104,12 @@ const remove = async (req: Request, res: Response) => {
     res.status(400).json(error);
   }
 };
-
+*/
 const userRoutes = (app: express.Application) => {
   app.get("/user", index),
-    app.get("/user/:id",  show),
-    app.post("/user/authenticate",  authenticate),
-    app.post("/user/create", create),
-    app.put("/user/update/:id", verifyToken, update),
-    app.delete("/user/remove/:id",verifyToken, remove);
+  app.get("/user/:id",  show),
+  app.post("/user/authenticate",  authenticate),
+  app.post("/user/create", create)
+    
 };
 export default userRoutes;

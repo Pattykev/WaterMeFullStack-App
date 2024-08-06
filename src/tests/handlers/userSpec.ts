@@ -10,8 +10,7 @@ const user=new UserQueries();
 
 const userData: User = {
   userName: "pattykev",
-  firstName: "TCHINGUÉ",
-  lastName: "Patricia",
+  email: "Patricia@gmail.com",
   password: "patty@2103"
 };
 let token: string,
@@ -64,36 +63,6 @@ await conn.query("alter sequence users_id_seq restart with 1");
 
     expect(res.status).toBe(200);
     
-  });
-
-  it("should  delete the user ", async () => {
-    const res = await request
-      .delete(`/user/remove/${userId}`)
-      .set("Content-Type","Application/Json")
-      .set("Accept","Application/Json")
-      .set("Authorization", "Bearer " + token);
-
-    expect(res.status).toBe(200);
-    
-  });
-
-  it('should update the user ', async () => {
-  
-    const userData: User = {
-
-      userName: "patty",
-      firstName: "TCHINGUÉ",
-      lastName: "Patricia",
-      password: "patty@2103"
-    };
-    const res = await request
-      .put(`/user/update/${userId}`)
-      .send(userData)
-      .set("Content-Type","Application/Json")
-      .set("Accept","Application/Json")
-      .set("Authorization", "Bearer " + token);
-    expect(res.status).toBe(200);
- 
   });
 
   it('should  authenticate the user ', async () => {

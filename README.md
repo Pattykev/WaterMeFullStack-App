@@ -1,10 +1,10 @@
-# STOREFRONT API BACKEND
+# WaterMe API BACKEND
 
  This is a restful API build in TypeScript for the usage of a frontend developper.
  
  The API use Postgresql for storing store informations.
  
- **The database schema and Endpoint** can be found in the [ REQUIREMENTS.md]( https://github.com/Pattykev/creating-an-api-with-postgresql-and-express/blob/master/REQUIREMENTS.md ) file.
+ **The database schema and Endpoint** can be found in the [ Waterme-ClassDiagram.png ] ( https://github.com/Pattykev/WaterMeFullStack-App/WaterMe-Backend/Waterme-ClassDiagram.png ) file.
 
 ## Install the modules
 
@@ -14,32 +14,32 @@
 
 Docker didn't work on my computer so i used a local database.
 
- Connect to the default database postgres as the server's root user by running `psql -U postgres`
+Connect to the default database postgres as the server's root user by running `psql -U postgres`
 
- The database will run on port **5432**
+The database will run on port **5432**
  
 **Then create the database user with** `CREATE USER fullstack_student with PASSWORD 'fullstack';`
 
- **Create the databases needed:** `CREATE DATABASE storefront_db;`  `CREATE DATABASE storefront_db_test;`
+ **Create the databases needed:** `CREATE DATABASE waterplants_db;`  `CREATE DATABASE waterplants_db_test;`
  
- **Assign fullstack_student user privileges on the two tables**: `GRANT ALL PRIVILEGES ON DATABASE storefront_db TO fullstack_student ` `GRANT ALL PRIVILEGES ON DATABASE storefront_db_test TO fullstack_student `
+ **Assign fullstack_student user privileges on the two tables**: `GRANT ALL PRIVILEGES ON DATABASE waterplants_db TO fullstack_student ` `GRANT ALL PRIVILEGES ON DATABASE water_db_test TO fullstack_student `
  
  ## Setting up environment
 
  Inside the repository's main directory, create a text file named `.env ` that will hold the configuration. The file should look like this:
 ```
     POSTGRES_HOST=127.0.0.1
-    POSTGRES_DB=storefront_db
+    POSTGRES_DB=waterplants_db
     POSTGRES_USER=fullstack_student
     POSTGRES_PASSWORD=fullstack
-    POSTGRES_TEST_DB=storefront_db_test
+    POSTGRES_TEST_DB=waterplants_db_test
     ENV=test
     BCRYPT_PASSWORD=Patricia_2103
     SALT_ROUNDS=10
     TOKEN_SECRET=information2
  
 ````
-If the variable ENV has the value test, the storefront_db_test will be used instead of storefront_db.
+If the variable ENV has the value test, the waterplants_db_test will be used instead of waterplants_db.
 
 ## Server running
 

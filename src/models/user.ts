@@ -6,8 +6,7 @@ import bcrypt from 'bcrypt';
 export type User = {
   id?: number;
   userName: string;
-  firstName: string;
-  lastName: string;
+  email: string;
   password: string;
 };
 const salt_rounds: number = parseInt(process.env.SALT_ROUNDS as string);
@@ -45,12 +44,11 @@ export class UserQueries {
       //@ts-ignore
       const conn = await Client.connect();
       const sql =
-        'insert into users(username, firstname, lastname, password) values($1, $2, $3, $4) returning *';
+        'insert into users(username, email, password) values($1, $2, $3) returning *';
       const hash = bcrypt.hashSync(user.password + pepper, salt_rounds);
       const result = await conn.query(sql, [
         user.userName,
-        user.firstName,
-        user.lastName,
+        user.email,
         hash
       ]);
       conn.release();
@@ -59,7 +57,7 @@ export class UserQueries {
       throw new Error(`Could not get  create the user Error: ${err}`);
     }
   }
-
+/*
   async update(user: User): Promise<User> {
     try {
       //@ts-ignore
@@ -93,7 +91,7 @@ export class UserQueries {
       throw new Error(`Could not delete the user Error: ${err}`);
     }
   }
-
+*/
   async authenticate(userName: string, password: string): Promise<User | null> {
     //@ts-ignore
     const conn = await Client.connect();
@@ -107,6 +105,7 @@ export class UserQueries {
     }
     return null;
   }
+  
   async deleteAll(): Promise<void> {
     try {
       //@ts-ignore
@@ -119,4 +118,5 @@ export class UserQueries {
       throw new Error(`Could not delete the products Error: ${err}`);
     }
   }
+  
 }

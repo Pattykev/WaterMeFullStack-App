@@ -1,5 +1,5 @@
 {
-  "name": "storefront_backend",
+  "name": "waterme_backend",
   "version": "0.1.0",
   "description": "",
   "main": "server.ts",
@@ -22,7 +22,7 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "body-parser": "^1.19.0",
-    "db-migrate": "^0.11.13",
+    "db-migrate": "^0.11.14",
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
@@ -52,5 +52,5 @@
     "ts-node": "^9.1.1",
     "tsc-watch": "^4.2.9"
   },
-  "repository": "https://github.com/Pattykev/creating-an-api-with-postgresql-and-express.git"
+  "repository": "https://github.com/Pattykev/WaterMeFullStack-App.git"
 }

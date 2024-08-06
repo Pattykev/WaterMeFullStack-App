@@ -25,7 +25,7 @@ const SECRET= process.env.TOKEN_SECRET as Secret;
         next();
         }
         catch(error){
-            res.status(401).json('Acess denied, invalid token');
+            res.status(401).json('Access denied, invalid token');
             return;
         }
     
